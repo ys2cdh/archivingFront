@@ -3,10 +3,10 @@
   <div>
     <h1>List of Messages</h1>
     <ul>
-      <li v-for="message in displayedMessages" :key="message.id">
-        <div>{{ message.sender }} -> {{ message.receiver }}</div>
-        <div>{{ message.title }}</div>
-        <!----><div>{{ formatDate(message.date) }}</div>-->
+      <li v-for="message in displayedMessages" :key="message.messageId">
+        <div>{{ message.from }} -> {{ message.to[0].email  }}  {{ message.subject }}</div>
+        
+       
       </li>
     </ul>
     <button @click="prevPage()" :disabled="currentPage === 1">Previous</button>
@@ -42,7 +42,7 @@ export default {
     fetchMessages() {
       axios.get(`http://localhost:8080/allList.jsp?from=${this.currentPage}&size=${this.pageSize}`)
         .then(response => {
-          this.messages = response.data;
+          this.messages = response.data.data;
         })
         .catch(error => {
           console.error('Error fetching messages:', error);
