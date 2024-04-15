@@ -2,6 +2,11 @@
 <template>
   <div>
     <h1>List of Messages</h1>
+    <div class="search-container">
+      <input type="text" v-model="searchTerm" placeholder="검색어를 입력하세요">
+      <a-icon class="search-icon" :type="SearchOutlined" @click="searchMessages"></a-icon>
+      <component :is="filterIconType" class="filter-icon" :type="filterIconType" @click="toggleFilterOptions"></component>
+    </div>
     <table>
       <thead>
         <tr>
@@ -41,16 +46,24 @@
 <script>
 import axios from 'axios';
 import { watch  } from 'vue'
+import { SearchOutlined, CaretDownOutlined,CaretUpOutlined } from '@ant-design/icons-vue';
 
 
-export default {    
+export default {   
+  components: {
+    'a-icon': SearchOutlined,
+    'caret-down-icon': CaretDownOutlined,
+    'caret-up-icon': CaretUpOutlined,
+  }, 
   data() {
     return {
       messages: [],  
       currentPage:1,    
       itemsPerPage: 10, // 페이지당 표시할 항목 수      
       totalItems: 0, // 전체 항목 수
-      pageSize: 10
+      pageSize: 10,
+      searchTerm: '', //전체 검색어,
+      showFilterOptions: false, //토글 상태
     };
   },
   computed: {
@@ -66,6 +79,9 @@ export default {
       const endPage = Math.min(this.totalPages, startPage + 9);
       return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
     },
+    filterIconType() {
+      return this.showFilterOptions ? 'caret-up-icon' : 'caret-down-icon';
+    }
   },
   mounted() {
     this.fetchMessages();    
@@ -105,6 +121,19 @@ export default {
     handleInput (current, previous) {
       console.log('[count] handleInput => ', current, previous) 
     },
+    searchMessages() {
+      axios.get(`http://localhost:8080/searchValueAllList.jsp?from=${this.currentPage}&size=${this.pageSize}&searchValue=${this.searchTerm}`)
+        .then(response => {
+          this.messages = response.data.data;
+          this.totalItems = response.data.total;
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });     
+    },
+    toggleFilterOptions() {
+      this.showFilterOptions = !this.showFilterOptions;
+    }
   }
 }
 </script>
@@ -132,5 +161,26 @@ thead {
 .pagination button:focus {
   font-weight: bold; 
   color: blue; /* 선택된 페이지 버튼의 배경색을 파란색으로 변경 */
+}
+
+.search-container {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.search-icon {
+  position: relative;
+  right: 39px; /* 아이콘을 input 오른쪽에 위치시킵니다. */
+  top: 8px; /* 수직 중앙 정렬 */
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.filter-icon{
+  position: relative;
+  right: 35px; /* 아이콘을 input 오른쪽에 위치시킵니다. */
+  top: 8px; /* 수직 중앙 정렬 */
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 </style>
