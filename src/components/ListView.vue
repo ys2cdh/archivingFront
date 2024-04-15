@@ -40,6 +40,15 @@
       </button>
       <button @click="nextPage()" :disabled="currentPage === totalPages">&#62;</button>
     </div>
+
+     <!-- 모달리스 다이얼로그 -->
+     <div class="modalless" :style="{'top':yPosition+'px','left':xPosition +'px'}" v-if="showFilterOptions" @click="closeModalOutside" >
+      <div class="modal-content" @click.stop>
+        <h2>Filter Options</h2>
+        <input type="text" v-model="filterOption" placeholder="필터 옵션을 입력하세요">
+        <button @click="applyFilter">Apply</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,8 +71,10 @@ export default {
       itemsPerPage: 10, // 페이지당 표시할 항목 수      
       totalItems: 0, // 전체 항목 수
       pageSize: 10,
-      searchTerm: '', //전체 검색어,
+      searchTerm: '', //전체 검색어,      
       showFilterOptions: false, //토글 상태
+      xPosition:0,
+      yPosition:0,
     };
   },
   computed: {
@@ -79,7 +90,7 @@ export default {
       const endPage = Math.min(this.totalPages, startPage + 9);
       return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
     },
-    filterIconType() {
+    filterIconType() {      
       return this.showFilterOptions ? 'caret-up-icon' : 'caret-down-icon';
     }
   },
@@ -131,14 +142,46 @@ export default {
           console.error('Error fetching messages:', error);
         });     
     },
-    toggleFilterOptions() {
-      this.showFilterOptions = !this.showFilterOptions;
-    }
+    toggleFilterOptions(event) {
+      this.showFilterOptions = !this.showFilterOptions;      
+      if (this.showFilterOptions){
+        this.xPosition=(event.clientX+100);
+        this.yPosition=(event.clientY-100);
+      }
+    },
+    applyFilter() {
+      // 여기에 필터 적용 로직을 추가할 수 있습니다.
+      // 현재는 filterOption을 사용하는 예시입니다.
+      console.log('Applied filter:', this.filterOption);
+      this.toggleFilterOptions(); // 검색 버튼을 누르면 모달리스를 닫습니다.
+    },    
+    closeModalOutside(event) {
+      
+      // 모달 바깥을 클릭하면 모달을 닫음
+      if (event.target.classList.contains('modalless')) {
+        this.toggleFilterOptions();
+      }
+    },
   }
 }
 </script>
 
 <style>
+/* 모달 스타일 */
+.modalless {
+  position: fixed;
+  z-index: 1;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
 thead {
   background-color: #333;
   color: white;
