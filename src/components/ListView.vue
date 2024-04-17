@@ -1,6 +1,7 @@
 <!-- ListView.vue -->
 <template>
   <div>
+    <div v-click-outside="onClickOutside">aaa</div>
     <h1>List of Messages</h1>
     <div class="search-container">
       <input type="text" v-model="searchTerm" placeholder="검색어를 입력하세요">
@@ -42,8 +43,8 @@
     </div>
 
      <!-- 모달리스 다이얼로그 -->
-     <div class="modalless" :style="{'top':yPosition+'px','left':xPosition +'px'}" v-if="showFilterOptions" @click="closeModalOutside" >
-      <div class="modal-content" @click.stop>
+     <div class="modalless" :style="{'top':yPosition+'px','left':xPosition +'px'}" v-if="showFilterOptions"  >
+      <div class="modal-content" v-click-outside="closeModalOutside">
         <h2>Filter Options</h2>
         <input type="text" v-model="filterOption" placeholder="필터 옵션을 입력하세요">
         <button @click="applyFilter">Apply</button>
@@ -56,9 +57,12 @@
 import axios from 'axios';
 import { watch  } from 'vue'
 import { SearchOutlined, CaretDownOutlined,CaretUpOutlined } from '@ant-design/icons-vue';
-
+import vClickOutside from 'v-click-outside'
 
 export default {   
+  directives: {
+      clickOutside: vClickOutside.directive
+  },
   components: {
     'a-icon': SearchOutlined,
     'caret-down-icon': CaretDownOutlined,
@@ -145,9 +149,29 @@ export default {
     toggleFilterOptions(event) {
       this.showFilterOptions = !this.showFilterOptions;      
       if (this.showFilterOptions){
-        this.xPosition=(event.clientX+100);
-        this.yPosition=(event.clientY-100);
+        this.calculateModalSize();
+        this.calculateModalPosition(event);
+        //this.xPosition=(event.clientX-100);
+        //this.yPosition=(event.clientY+100);
       }
+    },
+    calculateModalSize() {
+      // 모달 내용의 크기를 측정하기 위해 임시로 모달 내용을 추가하여 크기를 측정
+      const modalContent = document.createElement('div');
+      modalContent.innerHTML = '<h2>Filter Options</h2><input type="text" placeholder="Filter option"><button>Apply</button>';
+      modalContent.style.position = 'absolute';
+      modalContent.style.visibility = 'hidden';
+      document.body.appendChild(modalContent);
+      // 모달의 가로 세로 크기를 측정
+      this.modalWidth = modalContent.offsetWidth;
+      this.modalHeight = modalContent.offsetHeight;
+      // 임시로 추가한 모달 내용을 제거
+      document.body.removeChild(modalContent);
+    },
+    calculateModalPosition(event) {
+      // 모달 위치 계산
+      this.xPosition = event.clientX - this.modalWidth;
+      this.yPosition = event.clientY + this.modalHeight/2;
     },
     applyFilter() {
       // 여기에 필터 적용 로직을 추가할 수 있습니다.
@@ -161,6 +185,9 @@ export default {
       if (event.target.classList.contains('modalless')) {
         this.toggleFilterOptions();
       }
+    },
+    onClickOutside (event) {
+        console.log('Clicked outside. Event: ', event)
     },
   }
 }
@@ -176,10 +203,7 @@ export default {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+  border: 1px solid #888; 
 }
 
 thead {

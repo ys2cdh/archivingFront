@@ -10,7 +10,10 @@
   "dependencies": {
     "ant-design-vue": "^4.1.2",
     "axios": "^1.6.8",
+    "click-outside-vue3": "^4.0.1",
     "core-js": "^3.8.3",
+    "typesafe-actions": "^5.1.0",
+    "v-click-outside": "^3.2.0",
     "vue": "^3.2.13",
     "vue-router": "^4.3.0"
   },
@@ -35,7 +38,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {"vue/no-unused-components": "off"}
+    "rules": {
+      "vue/no-unused-components": "off"
+    }
   },
   "browserslist": [
     "> 1%",
