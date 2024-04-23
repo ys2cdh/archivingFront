@@ -19,7 +19,8 @@
                 </a-menu>
             </template>
         </a-dropdown>
-        <input type="text" v-model="filterOption" placeholder="필터 옵션을 입력하세요" @click="showCalendar">
+        <input type="text" v-model="startTime" placeholder="" @click="showCalendar('startTime')">
+        <input type="text" v-model="endTime" placeholder="" @click="showCalendar('endTime')">
         <div style="height:'400px';width: '300px'">
             <a-calendar class="searchCalendar" v-if="calendarVisible" @vue:mounted="dosearchCalendarMounted" @select="onPanelChange" ></a-calendar>
         </div>
@@ -46,6 +47,7 @@ export default {
             xPosition: 0,
             yPosition: 0,
             calendarVisible: false, // 달력의 가시성 상태를 저장하는 데이터
+            selectCalendar:'', //선택된 달력
         };
     },
     computed: {
@@ -56,16 +58,15 @@ export default {
         applyFilter() {
             // 여기에 필터 적용 로직을 추가할 수 있습니다.
             // 현재는 filterOption을 사용하는 예시입니다.
-            console.log('Applied filter:', this.filterOption);
+            console.log('startTime :', this.startTime);
+            console.log('endTime :', this.endTime);
             //  this.toggleFilterOptions(); // 검색 버튼을 누르면 모달리스를 닫습니다.
             this.$emit('close');
         },
-        showCalendar() {
+        showCalendar(id) {
             
             this.calendarVisible = true; // 달력을 보이도록 설정
-           
-
-
+            this.selectCalendar=id;
         },
         hideCalendar() {
             this.calendarVisible = false; // 달력을 숨기도록 설정
@@ -79,6 +80,12 @@ export default {
         },
         onPanelChange(value, mode) {
             console.log(value.format('YYYY-MM-DD'), mode);
+            if ('startTime' === this.selectCalendar){
+                this.startTime=value.format('YYYY-MM-DD');
+            } else if ('endTime' === this.selectCalendar) {
+                this.endTime=value.format('YYYY-MM-DD');
+            }
+            this.hideCalendar();
         }
     }
 }
