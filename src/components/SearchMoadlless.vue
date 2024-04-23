@@ -21,7 +21,7 @@
         </a-dropdown>
         <input type="text" v-model="filterOption" placeholder="필터 옵션을 입력하세요" @click="showCalendar">
         <div style="height:'400px';width: '300px'">
-            <a-calendar v-if="calendarVisible"></a-calendar>
+            <a-calendar class="searchCalendar" v-if="calendarVisible" @vue:mounted="dosearchCalendarMounted" @select="onPanelChange" ></a-calendar>
         </div>
         <button @click="applyFilter">Apply</button>
     </div>
@@ -61,11 +61,25 @@ export default {
             this.$emit('close');
         },
         showCalendar() {
+            
             this.calendarVisible = true; // 달력을 보이도록 설정
+           
+
+
         },
         hideCalendar() {
             this.calendarVisible = false; // 달력을 숨기도록 설정
         },
+        dosearchCalendarMounted(){
+            var bar = document.getElementsByClassName("ant-picker-calendar-date-content");
+                 for (var i = 0; i < bar.length; i++) {
+                bar[i].style.height = "10px";
+                bar[i].style.width = '20px';
+               }
+        },
+        onPanelChange(value, mode) {
+            console.log(value.format('YYYY-MM-DD'), mode);
+        }
     }
 }
 </script>
@@ -74,4 +88,11 @@ export default {
     background-color: #fefefe;
     border: 1px solid #888;
 }
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+
 </style>
