@@ -145,14 +145,29 @@ export default {
           console.error('Error fetching messages:', error);
         });
     },
-    toggleFilterOptions(event) {
+    searchDetailMessages(map){
+    
+      axios.get(`http://localhost:8080/searchValueList.jsp?from=${this.currentPage}&size=${this.pageSize}&startTime=${map.get("startTime")}&endTime=${map.get("endTime")}`)
+       .then(response => {
+          this.messages = response.data.data;
+          this.totalItems = response.data.total;
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
+    },
+    toggleFilterOptions(event,map) {
+      //console.log("showFilterOptions : " + this.showFilterOptions);
+      if(typeof map != "undefined" && map != null && map instanceof Map){
+        this.searchDetailMessages(map);
+      }
       this.showFilterOptions = !this.showFilterOptions;
       if (this.showFilterOptions) {
         this.calculateModalSize();
         this.calculateModalPosition(event);
         //this.xPosition=(event.clientX-100);
         //this.yPosition=(event.clientY+100);
-      }
+      }      
     },
     calculateModalSize() {
       // 모달 내용의 크기를 측정하기 위해 임시로 모달 내용을 추가하여 크기를 측정
@@ -168,6 +183,7 @@ export default {
       document.body.removeChild(modalContent);
     },
     calculateModalPosition(event) {
+      console.log("event : " + event);
       // 모달 위치 계산
       this.xPosition = event.clientX - this.modalWidth;
       this.yPosition = event.clientY + this.modalHeight / 2;

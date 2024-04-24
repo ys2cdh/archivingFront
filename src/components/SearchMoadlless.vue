@@ -55,13 +55,16 @@ export default {
     },
     methods: {
 
-        applyFilter() {
+        applyFilter(event) {
             // 여기에 필터 적용 로직을 추가할 수 있습니다.
             // 현재는 filterOption을 사용하는 예시입니다.
             console.log('startTime :', this.startTime);
             console.log('endTime :', this.endTime);
             //  this.toggleFilterOptions(); // 검색 버튼을 누르면 모달리스를 닫습니다.
-            this.$emit('close');
+            const map = new Map();
+            map.set('startTime', this.startTime);
+            map.set('endTime', this.endTime);
+            this.$emit('close',event,map);
         },
         showCalendar(id) {
             
