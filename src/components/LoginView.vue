@@ -1,65 +1,85 @@
 <template>
   <div class="login" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <a-form
-      id="formLogin"
-      class="user-layout-login"
-      @submit="handleSubmit"
-      style="width: 300px;"
-    >
-    <div>
-      <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px;" :message="$t('user.login.message-invalid-credentials')" />
-      <a-form-item>
-            <a-input
-              size="large"
-              type="text"
-              :placeholder="a"
-             
-            >
-            <template #prefix>
-            <UserOutlined :style="{ color: 'rgba(0,0,0,.25)' }"/>
-          </template> 
-            </a-input>
-          </a-form-item>
+    <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish" @finishFailed="onFinishFailed">
+      <a-form-item label="" name="username" :rules="[{ required: true, message: 'Please input your username!' }]">
+        <a-input size="large" v-model:value="formState.username">
+          <template #prefix>
+            <UserOutlined class="site-form-item-icon" />
+          </template>
+        </a-input>
+      </a-form-item>
 
-          <a-form-item>
-            <a-input-password
-              size="large"
-              :placeholder="s"
-             
-            >
-            <template #prefix>
-            <LockOutlined :style="{ color: 'rgba(100,0,0,.25)' }"/>              
-            </template>
-            </a-input-password>
-          </a-form-item>
-    </div>
-  </a-form>
-  <a-form-item>
-    <a-checkbox v-model:checked="checked">Remember me</a-checkbox>
-  </a-form-item>
+      <a-form-item label="" name="password" :rules="[{ required: true, message: 'Please input your password!' }]">
+        <a-input-password size="large" v-model:value="formState.password">
+          <template #prefix>
+            <LockOutlined class="site-form-item-icon" />
+          </template>
+        </a-input-password>
+      </a-form-item>
+
+      <a-form-item>
+        <a-form-item name="remember" no-style>
+          <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+        </a-form-item>
+        <a class="login-form-forgot" href="">Forgot password</a>
+      </a-form-item>
+
+      <a-form-item>
+        <a-button size="large" type="primary" html-type="submit" class="login-form-button" style="width: 300px;">
+          Log in
+        </a-button>
+      </a-form-item>
+    </a-form>
   </div>
 </template>
 
 <script>
-import { UserOutlined,LockOutlined } from '@ant-design/icons-vue';
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 
 export default {
-  data(){
+  data() {
     return {
-      
+      state: {
+        time: 60,
+        loginBtn: false,
+        // login type: 0 email, 1 username, 2 telephone
+        loginType: 0,
+        smsSendBtn: false
+      },
+      formState: {
+        // 폼 데이터를 저장할 객체를 추가합니다.
+        username: '', // 사용자 이름 또는 이메일 필드
+        password: '', // 비밀번호 필드
+        remember: false // "Remember me" 체크박스
+      }
     }
   },
   components: {
-    'UserOutlined':UserOutlined,
-    'LockOutlined':LockOutlined,
+    'UserOutlined': UserOutlined,
+    'LockOutlined': LockOutlined,
   },
   methods: {
-    handleUsernameOrEmail (rule, value, callback) {
-      console.log(rule, value, callback);
+    onFinishFailed(errorInfo) {
+      console.log(errorInfo);
     },
-  },
-  handleSubmit (e) {
-    e.preventDefault()
-  },
+
+    onFinish() {
+      console.log('Form submitted with data:', this.formState);
+    },
+  }
 }
 </script>
+
+<style scoped>
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
+}
+</style>
