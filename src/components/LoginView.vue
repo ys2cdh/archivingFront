@@ -65,6 +65,9 @@ export default {
 
     onFinish() {
       console.log('Form submitted with data:', this.formState);
+      // event.preventDefault();
+      this.$store.commit('login',this.formState.username);
+      this.$router.push('/');
     },
   }
 }

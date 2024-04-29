@@ -5,7 +5,14 @@
 </template>
 
 <script>
-export default {}
+export default {
+  mounted(){
+    this.$store.commit('initialiseStore')
+  },
+  logout(){
+    this.$store.commit('logout')
+  },
+}
 </script>
 
 <style>
