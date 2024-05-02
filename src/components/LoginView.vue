@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 
 export default {
@@ -66,6 +67,16 @@ export default {
     onFinish() {
       console.log('Form submitted with data:', this.formState);
       // event.preventDefault();
+
+      axios.post(`http://localhost:8080/user/login.jsp?id=${this.formState.username}&pw=${this.formState.password}`)
+        .then(response => {
+          localStorage.setItem('user_token', response.data.token);
+          console.log('token :', response.data.token);
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
+
       this.$store.commit('login',this.formState.username);
       this.$router.push('/');
     },
