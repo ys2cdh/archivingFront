@@ -78,7 +78,7 @@ export default {
         });
 
       this.$store.commit('login',this.formState.username);
-      this.$router.push('/');
+      this.$router.push('/initView');
     },
   }
 }

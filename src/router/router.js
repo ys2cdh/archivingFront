@@ -6,12 +6,14 @@ import ArchivingListView from '@/components/ListView'
 import Test from '@/components/testView'
 import ErrorPage from "@/components/ErrorPage"
 import Login from "@/components/LoginView"
+import InitView from "@/components/InitView"
 
 
 const routes = [
   { path: '/', component: HelloWorld , meta: { requiresAuth: true } },
   { path: '/hello', component: HelloWorld , meta: { requiresAuth: true } },
-  { path: '/listView', component: ArchivingListView },
+  { path: '/listView', component: ArchivingListView , meta:{ requiresAuth: true } },
+  { path: '/initView', component: InitView },
   { path: '/test', component: Test },
   { path: '/login', component: Login },
   { path : "/:catchAll(.*)", name : "ErrorPage", component : ErrorPage},  
