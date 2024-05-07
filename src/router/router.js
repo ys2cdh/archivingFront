@@ -23,9 +23,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('router beforeEach  :', store, store.state ,store.state.email);
+  console.log('router beforeEach  :', store.state.email);
   const token = localStorage.getItem('user_token')
-  if (to.meta.requiresAuth && !store.state.email) {
+  if (token==null && to.meta.requiresAuth && !store.state.email) {
     next('/login');
   } else {
     next();

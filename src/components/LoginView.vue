@@ -74,7 +74,7 @@ export default {
           console.log('token :', response.data.token);
         })
         .catch(error => {
-          console.error('Error fetching messages:', error);
+          console.log('Error fetching messages:', error);
         });
 
       this.$store.commit('login',this.formState.username);
