@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../utils/axios';
 import { watch } from 'vue'
 import { SearchOutlined, CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue';
 import Modalless from './SearchMoadlless.vue';

@@ -26,10 +26,14 @@
         v-if="showFilterOptions"
         ></Modalless>
     </div>    
-
+    <div>
+      <button v-on:click="fetchMessages()"> Add</button>
+    </div>
+      
 </template>
 
 <script>
+import axios from '../utils/axios';
 import Modalless from './SearchMoadlless.vue';
 import vClickOutside from 'click-outside-vue3'
 import { SearchOutlined, CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue';
@@ -38,17 +42,18 @@ export default {
     data() {
         return {
             workData : [{
-                            title: '我的待办',
-                            content: '8个任务',
-                        },
-                        {
-                            title: '本周任务平均处理时间',
-                            content: '32分钟',
-                        },
-                        {
-                            title: '本周完成任务数',
-                            content: '24个任务',
-                        },],
+                title: '금일',
+                content: null,
+              },
+              {
+                title: '한달 평균',
+                content: null,
+              },
+              {
+                title: '전체개수',
+                content: null,
+              },],
+            data:[],
         }
     },
     directives: {
@@ -60,6 +65,32 @@ export default {
         'caret-up-icon': CaretUpOutlined,
         Modalless,
     },
+    mounted() {
+    this.fetchMessages();    
+  },
+  methods: {
+    fetchMessages() {
+      axios.get(`http://localhost:8080/init.jsp`)
+        .then(response => {
+          //console.debug(response.data);
+        
+          this.data = response.data;
+          this.updateInitData();
+
+          //this.messages = response.data.data;
+          //this.totalItems = response.data.total;
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
+    },
+    updateInitData() {
+      this.workData[0].content= this.data.todayCount;
+      this.workData[1].content= this.data.MonthAvgCount;
+      this.workData[2].content= this.data.totalCount;
+    },   
+  },
+  
 }
 </script>
 
