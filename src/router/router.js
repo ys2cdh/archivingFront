@@ -3,6 +3,7 @@ import store from '@/store';
 
 import HelloWorld from '@/components/HelloWorld'
 import ArchivingListView from '@/components/ListView'
+import ArchivingListViewNew from '@/components/ListViewNew'
 import Test from '@/components/testView'
 import ErrorPage from "@/components/ErrorPage"
 import Login from "@/components/LoginView"
@@ -14,6 +15,7 @@ const routes = [
   { path: '/hello', component: HelloWorld , meta: { requiresAuth: true } },
   { path: '/listView', component: ArchivingListView , meta:{ requiresAuth: true } },
   { path: '/initView', component: InitView },
+  { path: '/listViewNew', component: ArchivingListViewNew  },
   { path: '/test', component: Test },
   { path: '/login', component: Login },
   { path : "/:catchAll(.*)", name : "ErrorPage", component : ErrorPage},  
